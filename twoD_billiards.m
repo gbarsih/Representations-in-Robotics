@@ -7,13 +7,13 @@ top = 1;
 right = 1;
 d = 0.5;
 dt = 0.001;
-T = 1000;
+T = 100;
 t = 1:T/dt;
 
-sigma = 0.1;
+sigma = 0.0;
 
-x_r = 1/3;
-y_r = pi/10;
+x_r = rand();
+y_r = rand();
 vx = 2;
 vy = -1;
 p = [x_r y_r]';
