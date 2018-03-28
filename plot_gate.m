@@ -18,7 +18,7 @@ boxy = [0 0 top top 0];
 plot(x_l,y_l,'b','LineWidth',2);
 hold on
 plot(x_t,y_t,'b','LineWidth',2);
-plot(boxx,boxy,'k','LineWidth',2.5);
+plot(boxx,boxy,'k','LineWidth',5);
 hold off
 
 end

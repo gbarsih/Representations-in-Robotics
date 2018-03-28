@@ -1,13 +1,13 @@
 clc
 close all
 %textprogressbar('running sim:   ');
-ratio = 0.1;
-loc = 0.3;
+ratio = 0.2;
+loc = 0.5;
 top = 1;
 right = 1;
-d = 0.9;
+d = 0.5;
 dt = 0.001;
-T = 2000;
+T = 100;
 t = 1:T/dt;
 
 sigma = 0.1;
@@ -68,7 +68,7 @@ for i = 1:length(t)
         act_changes = act_changes+1;
         region = new_region;
     end
-    corr(i) = (region==est_region);
+    correct(i) = 
     x_r = p(1);
     y_r = p(2);
     perf(i) = changes/act_changes;
@@ -77,18 +77,8 @@ for i = 1:length(t)
     %textprogressbar(progress);
     
 end
-
-for i=2:(length(corr)-1)
-    corr(i)=corr(i-1)+corr(i);
-end
-
 refreshdata
-close all
 
-figure
-plot(corr./t')
-
-figure('rend','painters','pos',[10 10 1500 600])
 subplot(1,2,1)
 plot(phist(:,1),phist(:,2),'r','LineWidth',0.1);
 hold on
