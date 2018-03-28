@@ -1,0 +1,24 @@
+function plot_gate(ratio,loc,top)
+
+%ratio: number between 0 and 1, proportion of blank area to working area
+%loc: position of the blank area, between 0 and 1;
+%top/right: top/right limit of the box
+
+gate_length = 1;
+available_length = gate_length*(1-ratio);
+blank_length = gate_length-available_length;
+
+y_l = linspace(0,loc-blank_length/2,10);
+x_l = inv_gate(y_l);
+y_t = linspace(loc+blank_length/2,top,10);
+x_t = inv_gate(y_t);
+
+boxx = 
+
+plot(x_l,y_l,'b','LineWidth',2);
+hold on
+plot(x_t,y_t,'b','LineWidth',2);
+hold off
+
+end
+
