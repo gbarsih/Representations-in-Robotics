@@ -1,21 +1,24 @@
 clc
 close all
 %textprogressbar('running sim:   ');
-ratio = 0.2;
+ratio = 0.1;
 loc = 0.5;
 top = 1;
 right = 1;
 d = 0.5;
 dt = 0.001;
-T = 100;
+T = 500;
 t = 1:T/dt;
 
 sigma = 0.1;
+mu = 0.0;
 
 x_r = rand();
 y_r = rand();
+x_r = 0.5;
+y_r = 0.5;
 vx = 2;
-vy = -1;
+vy = 1;
 p = [x_r y_r]';
 v = [vx vy]';
 h_x = x_r;
@@ -45,15 +48,16 @@ for i = 1:length(t)
     pn = p+dt*v;
     if(pn(1)>=right || pn(1)<=0)
         wall = [0 1];
-        angle = 2*atan2(v(1)*wall(2)-v(2)*wall(1),v(1)*wall(1)+ v(2)*wall(2));
+        angle = (sigma*randn()+mu)+2*atan2(v(1)*wall(2)-v(2)*wall(1),v(1)*wall(1)+ v(2)*wall(2));
+        angle = pi/2;
         R = [cos(angle) -sin(angle); sin(angle) cos(angle)];
-        v = R*v+sigma*randn(2,1);
+        v = R*v;
     end
     if(pn(2)>=top || pn(2)<=0)
         wall = [1 0];
-        angle = 2*atan2(v(1)*wall(2)-v(2)*wall(1),v(1)*wall(1)+ v(2)*wall(2));
+        angle = (sigma*randn()+mu)+2*atan2(v(1)*wall(2)-v(2)*wall(1),v(1)*wall(1)+ v(2)*wall(2));
         R = [cos(angle) -sin(angle); sin(angle) cos(angle)];
-        v = R*v+sigma*randn(2,1);
+        v = R*v;
     end
     
     %plot([p(1) pn(1)],[p(2) pn(2)],'r','LineWidth',1);
@@ -68,7 +72,7 @@ for i = 1:length(t)
         act_changes = act_changes+1;
         region = new_region;
     end
-    correct(i) = 
+    corr(i) = (region==est_region);
     x_r = p(1);
     y_r = p(2);
     perf(i) = changes/act_changes;
@@ -77,17 +81,36 @@ for i = 1:length(t)
     %textprogressbar(progress);
     
 end
-refreshdata
 
-subplot(1,2,1)
+for i=2:(length(corr)-1)
+    corr(i)=corr(i-1)+corr(i);
+end
+
+refreshdata
+close all
+
+figure('rend','painters','pos',[2560 0 700 700])
 plot(phist(:,1),phist(:,2),'r','LineWidth',0.1);
 hold on
 plot_gate(ratio,loc,top,right,d);
 hold off
-axis([0 right 0 top])
 axis equal
-t = linspace(0,T,T/dt);
-subplot(1,2,2)
-plot(t,perf,'LineWidth',1.2)
+axis([0 right 0 top])
+
+nt = linspace(0,(T-dt),(T/dt-1));
+figure('rend','painters','pos',[10 700 1000 1000])
+subplot(2,1,1)
+plot(nt,corr(1:end-1)./t(1:end-1)','LineWidth',2)
+title('Correcteness','Interpreter','latex')
 ylim([0 1])
+grid on
+subplot(2,1,2)
+t = linspace(0,T,T/dt);
+plot(t,perf,'LineWidth',2)
+ylim([0 1])
+xlabel('Time [s]','Interpreter','latex');
+title('Percentage of on-beam crossings
+grid on
+
+
 
