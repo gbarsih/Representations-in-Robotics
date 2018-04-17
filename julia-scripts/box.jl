@@ -1,10 +1,26 @@
+PyPlot.close()
 using DynamicalBilliards, PyPlot
+import DynamicalBilliards.propagate!
 
-bt = billiard_polygon(6, 1)
+@inline function propagate!(p::MagneticParticle{T}, t::Real)::Void where {T}
+    ω = p.omega + 0.1^2*randn(); φ0 = atan2(p.vel[2], p.vel[1])
+    sinωtφ = sin(ω*t + φ0); cosωtφ = cos(ω*t + φ0)
+    p.pos += SV{T}(sinωtφ/ω - sin(φ0)/ω, -cosωtφ/ω + cos(φ0)/ω)
+    p.vel = SVector{2, T}(cosωtφ, sinωtφ)
+    return
+end
+@inline function propagate!(p::MagneticParticle{T}, newpos::SVector{2,T}, t) where {T}
+    ω = p.omega + 0.1^2*randn(); φ0 = atan2(p.vel[2], p.vel[1])
+    p.pos = newpos
+    p.vel = SVector{2, T}(cos(ω*t + φ0), sin(ω*t + φ0))
+    return
+end
+
+bt = billiard_polygon(4, 1)
 plot_billiard(bt)
-p = randominside(bt, 0.5)
-# plot_particle(p)
-xt, yt, vxt, vyt, t = construct(evolve!(p, bt, 10)...)
+p = randominside(bt, 0.1)
+plot_particle(p)
+xt, yt, vxt, vyt, t = construct(evolve!(p, bt, 100)...)
 plot_billiard(bt, xt, yt)
 plot_particle(p)
 
