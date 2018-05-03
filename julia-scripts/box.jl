@@ -1,48 +1,77 @@
-PyPlot.close()
 using DynamicalBilliards, PyPlot
-import DynamicalBilliards.propagate!
+include("vgate.jl")
+include("agent.jl")
 
-@inline function propagate!(p::MagneticParticle{T}, t::Real)::Void where {T}
-    ω = p.omega + 0.1^2*randn(); φ0 = atan2(p.vel[2], p.vel[1])
-    sinωtφ = sin(ω*t + φ0); cosωtφ = cos(ω*t + φ0)
-    p.pos += SV{T}(sinωtφ/ω - sin(φ0)/ω, -cosωtφ/ω + cos(φ0)/ω)
-    p.vel = SVector{2, T}(cosωtφ, sinωtφ)
-    return
+# Close plots
+PyPlot.close()
+
+# Choose number of agents
+num_agents = 5
+
+# Construct a rectangular environment
+world = Obstacle[billiard_rectangle(5.0, 1.0; setting = "random").obstacles...]
+
+# Define the virtual gates
+sp = [
+      2.0 0.0;
+      3.0 0.0;
+     ]'
+
+ep = [
+      2.0 1.0;
+      3.0 1.0;
+     ]'
+n = [
+     -1.0 0.0;
+     -1.0 0.0;
+    ]'
+clr = [
+        "red",
+        "blue"
+      ]
+
+u = Dict()
+for i = 1:length(clr)
+    gate = VirtualGate(sp[:,i], ep[:,i], n[:,i], clr[i])
+    push!(world, gate)
+    push!(u, clr[i]=>0)
 end
-@inline function propagate!(p::MagneticParticle{T}, newpos::SVector{2,T}, t) where {T}
-    ω = p.omega + 0.1^2*randn(); φ0 = atan2(p.vel[2], p.vel[1])
-    p.pos = newpos
-    p.vel = SVector{2, T}(cos(ω*t + φ0), sin(ω*t + φ0))
-    return
+
+agt = []
+for i = 1:num_agents
+    bt = Billiard(deepcopy(world))
+    p = randominside(bt)
+    a = Agent(bt, deepcopy(u), p, 0)
+    push!(agt, a)
+    plot_particle(p; color=(0.5, 0.0, 0.0))
 end
 
-bt = billiard_polygon(4, 1)
-plot_billiard(bt)
-p = randominside(bt, 0.1)
-plot_particle(p)
-xt, yt, vxt, vyt, t = construct(evolve!(p, bt, 100)...)
-plot_billiard(bt, xt, yt)
-plot_particle(p)
+for j = 1:100
+    mint = Inf
+    minw = 0
+    k = 0
+    for i = 1:num_agents
+        toc, wall = next_collision(agt[i].p, agt[i].bt)
+        if toc ≤ mint
+            mint = toc
+            minw = wall
+            k = i
+        end
+    end
 
-# # Create billiard
-# bt = Billiard(bt.obstacles...)
-#
-# # Set axis
-# axis("off")
-# tight_layout()
-# gca()[:set_aspect]("equal")
-# xlim(-0.1,1.1)
-# ylim(-0.1,1.1)
-#
-# # Create a particle
-# p = randominside(bt, 0.1)
-# # particle colors
-# darkblue = (64/255, 99/255, 216/255)
-# lightblue = (102/255, 130/255, 223/255)
-#
-# okwargs = Dict(:linewidth => 2.0, :color => lightblue)
-# pkwargs = Dict(:color => darkblue, :s => 150.0)
-#
-# # create the animation:
-# animate_evolution(p, bt, 200; col_to_plot = 7,
-# particle_kwargs = pkwargs, orbit_kwargs = okwargs, newfig = false)
+    for i = 1:num_agents
+        if i==k && typeof(world[minw]) <: VirtualGate && agt[i].u[world[minw].color] == 0
+            propagate!(agt[i].p, mint)
+            agt[i].bt[minw].normal[:] *= -1
+            agt[i].u[world[minw].color] = 1
+        else
+            evolve!(agt[i].p, agt[i].bt, mint)
+        end
+    end
+end
+
+# Post Plotting
+for i = 1:num_agents
+    plot_particle(agt[i].p; color=(0.0, 0.5, 0.0))
+end
+plot_billiard(agt[1].bt)
