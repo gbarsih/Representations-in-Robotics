@@ -22,7 +22,7 @@ end
 
 function detected_crossing!(agent, color)
     agent.cntk -= 1
-    if agent.cnti == agent.cntk*(agent.cntk + 1)/2 + 1
+    if agent.cntk != 0 && agent.cnti == agent.cntk*(agent.cntk + 1)/2 + 1
         agent.cnti -= 1
         for key in keys(agent.u)
             agent.u[key] = 0
@@ -49,7 +49,8 @@ function received_broadcast!(agent, broadcast)
         end
         agent.u[broadcast[1]] = 1
     # Below to handle cyclic graphs with d ≤ 2
-    elseif agent.cnti > agent.cntk*(agent.cntk - 1)/2 
+    # (but can be added to chain case too, as it will not make a difference there)
+    elseif agent.cnti > agent.cntk*(agent.cntk - 1)/2 && agent.cntk > broadcast[2]
         for key in keys(agent.u)
             agent.u[key] = 1
         end

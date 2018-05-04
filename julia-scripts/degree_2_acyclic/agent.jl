@@ -22,7 +22,7 @@ end
 
 function detected_crossing!(agent, color)
     agent.cntk -= 1
-    if agent.cnti == agent.cntk*(agent.cntk + 1)/2 + 1
+    if agent.cntk != 0 && agent.cnti == agent.cntk*(agent.cntk + 1)/2 + 1
         agent.cnti -= 1
         for key in keys(agent.u)
             agent.u[key] = 0

@@ -1,5 +1,5 @@
 # Choose number of agents
-num_agents = 5
+num_agents = 7
 
 # Define the world polygon (counter-clockwise)
 polyOutersp = [
