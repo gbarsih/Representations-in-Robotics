@@ -22,8 +22,14 @@ function construct_billiard(polysp::AbstractArray{T, 2}, sp::AbstractArray{T, 2}
     return bt
 end
 
-function construct_billiard(polysp::AbstractArray{T, 2}, polyep::AbstractArray{T, 2},
-    sp::AbstractArray{T, 2}, ep::AbstractArray{T, 2}, clr::Vector{Symbol}) where {T<:AbstractFloat}
+function construct_billiard(polys_sp::AbstractArray{Array{T, 2}, 1}, sp::AbstractArray{T, 2},
+    ep::AbstractArray{T, 2}, clr::Vector{Symbol}) where {T<:AbstractFloat}
+    polys_ep = []
+    for i = 1:length(polys_sp)
+        push!(polys_ep, circshift(polys_sp[i], (0, -1)))
+    end
+    polysp = hcat(polys_sp...)
+    polyep = hcat(polys_ep...)
     polyn = [0.0 -1.0; 1.0 0.0]*(polyep - polysp)
 
     world = []

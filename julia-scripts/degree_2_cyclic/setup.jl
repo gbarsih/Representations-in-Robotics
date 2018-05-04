@@ -21,10 +21,7 @@ polyInnersp = [
               2.3 1.0;
             ]'
 
-polyOuterep = circshift(polyOutersp, (0, -1))
-polyInnerep = circshift(polyInnersp, (0, -1))
-polysp = [polyOutersp polyInnersp]
-polyep = [polyOuterep polyInnerep]
+poly = [polyOutersp, polyInnersp]
 
 # Define the virtual gates
 sp = [

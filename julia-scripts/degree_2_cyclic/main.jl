@@ -8,7 +8,7 @@ include("../vgate.jl")
 include("agent.jl")
 include("setup.jl")
 
-bt = construct_billiard(polysp, polyep, sp, ep, clr)
+bt = construct_billiard(poly, sp, ep, clr)
 u = construct_controlmap(length(clr))
 
 agt = create_agents(num_agents, init_width, init_center, u)
