@@ -1,12 +1,12 @@
 using DynamicalBilliards, Plots
-include("agent.jl")
-include("billiard_utils.jl")
-include("plot_utils.jl")
-include("randomfinitewall.jl")
-include("simulation.jl")
-include("vgate.jl")
+include("../billiard_utils.jl")
+include("../plot_utils.jl")
+include("../randomfinitewall.jl")
+include("../simulation.jl")
+include("../vgate.jl")
 
-include("problem_setup.jl")
+include("agent.jl")
+include("setup.jl")
 
 bt = construct_billiard(poly, sp, ep, clr)
 u = construct_controlmap(length(clr))
