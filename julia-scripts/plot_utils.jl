@@ -22,7 +22,7 @@ function plot_agent!(agent::Agent{T}) where {T<:AbstractFloat}
     xs = [agent.p.pos[1]]
     ys = [agent.p.pos[2]]
     scatter!(xs, ys,
-        marker = (:circle, 7, 0.1, :brown))
+        marker = (6,0.1,:brown,stroke(1.0)))
 end
 
 function plot_map(agt::Vector, bt::Billiard{T}) where {T<:AbstractFloat}

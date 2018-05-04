@@ -13,8 +13,7 @@ function simulate_once!(agt::Vector, bt::Billiard{T}, Δt::T) where {T<:Abstract
     end
 
     if minw > 0 && typeof(bt[minw]) <: VirtualGate && agt[k].u[bt[minw].color] == 0
-        propagate!(agt[k].p, mint)
-        # Algorithm: Self Crossing
+        propagate!(agt[k].p, mint + sqrt(eps(mint)))
         broadcast = detected_crossing!(agt[k], bt[minw].color)
     elseif minw > 0
         evolve!(agt[k].p, bt, 1)
@@ -23,7 +22,6 @@ function simulate_once!(agt::Vector, bt::Billiard{T}, Δt::T) where {T<:Abstract
     for i = 1:length(agt)
         if i != k
             propagate!(agt[i].p, mint)
-            # Algorithm: Detect Crossing
             if !isempty(broadcast)
                 received_broadcast!(agt[i], broadcast)
             end
