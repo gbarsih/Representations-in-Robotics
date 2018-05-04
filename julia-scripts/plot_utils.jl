@@ -4,7 +4,7 @@ function plot_walls!(bt::Billiard{T}) where {T<:AbstractFloat}
         ys = [wall.sp[2], wall.ep[2]]
         if typeof(wall) <: VirtualGate
             color = wall.color
-            alpha = 0.5
+            alpha = 0.3
             lw = 5.0
         else
             color = :black
@@ -22,7 +22,7 @@ function plot_agent!(agent::Agent{T}) where {T<:AbstractFloat}
     xs = [agent.p.pos[1]]
     ys = [agent.p.pos[2]]
     scatter!(xs, ys,
-        marker = (:circle, 7, 0.1, :green))
+        marker = (:circle, 7, 0.1, :brown))
 end
 
 function plot_map(agt::Vector, bt::Billiard{T}) where {T<:AbstractFloat}

@@ -1,4 +1,4 @@
-function simulate_once!(agt::Vector, bt::Billiard{T}, Δt::T)
+function simulate_once!(agt::Vector, bt::Billiard{T}, Δt::T) where {T<:AbstractFloat}
     broadcast = ()
     mint = Δt
     minw = 0

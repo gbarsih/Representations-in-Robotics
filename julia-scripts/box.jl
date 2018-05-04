@@ -10,6 +10,7 @@ include("problem_setup.jl")
 
 bt = construct_billiard(poly, sp, ep, clr)
 u = construct_controlmap(length(clr))
+
 agt = create_agents(num_agents, init_width, init_center, u)
 
 # Loop manually from here if you want to see step by step plots
@@ -17,5 +18,4 @@ agt = create_agents(num_agents, init_width, init_center, u)
     simulate_once!(agt, bt, 0.1)
 # end
 
-# Plot billiard
 plot_map(agt, bt)
