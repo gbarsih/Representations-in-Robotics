@@ -48,4 +48,5 @@ function received_broadcast!(agent, broadcast)
             agent.u[key] = 0
         end
         agent.u[broadcast[1]] = 1
+    end
 end
